@@ -1,4 +1,6 @@
+# Import python packages
 import streamlit as st
+from snowflake.snowpark.functions import col
 import requests
 
 # Write directly to the app
@@ -32,7 +34,7 @@ if ingredients_list:
     for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + ' '
         search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
-        # st.write('The search value for ', fruit_chosen, ' is ', search_on, '.')
+        #st.write('The search value for ', fruit_chosen, ' is ', search_on, '.')
 
         st.subheader(fruit_chosen + ' Nutrition Information')
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + search_on)
@@ -46,12 +48,5 @@ if ingredients_list:
     time_to_insert = st.button('Submit Order')
 
     if time_to_insert:
-        if name_on_order == "Kevin" and ingredients_list == ["Apples", "Lime", "Ximenia"]:
-            my_insert_stmt += " -- Marked as UNFILLED"
-        elif name_on_order == "Divya" and ingredients_list == ["Dragon Fruit", "Guava", "Figs", "Jackfruit", "Blueberries"]:
-            my_insert_stmt += " -- Marked as FILLED"
-        elif name_on_order == "Xi" and ingredients_list == ["Vanilla Fruit", "Nectarine"]:
-            my_insert_stmt += " -- Marked as FILLED"
-
         session.sql(my_insert_stmt).collect()
         st.success(f"Your Smoothie is ordered, '{name_on_order}'", icon="✅")
